@@ -1,0 +1,126 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+
+
+<div class="row">
+
+    <div class="col-xs-6">
+        <div class="row">
+            <div class="col-xs-3">
+
+                <div id="Priority">
+                    <h2 class="text-center">Priority</h2>
+                    <hr>
+                    <ul class="list list-unstyled">
+                    </ul>
+                </div>            
+            </div>
+            <div class="col-xs-3">
+                <div id="Customer">
+                    <h2 class="text-center">Customer</h2><hr>
+                    <ul class="list list-unstyled">
+                    </ul>
+                </div>            
+            </div>
+            <div class="col-xs-3">
+                <div id="Hot">
+                    <h2 class="text-center">Hot Lead</h2><hr>
+                    <ul class="list list-unstyled">
+                    </ul>
+                </div>            
+            </div>
+            <div class="col-xs-3">
+                <div id="Qualified">
+                    <h2 class="text-center">Qualified Lead</h2><hr>
+                    <ul class="list list-unstyled">
+                    </ul>
+                </div>            
+            </div>
+        </div>
+    </div> 
+    <div class="col-xs-6">
+        <div class="row">
+            <div class="col-xs-3">
+                <div id="Favorite">
+                    <h2 class="text-center">Favorite Lead</h2><hr>
+                    <ul class="list list-unstyled">
+                    </ul>
+                </div>            
+            </div>
+            <div class="col-xs-3">
+                <div id="Cold">
+                    <h2 class="text-center">Cold Lead</h2><hr>
+                    <ul class="list list-unstyled">
+                    </ul>
+                </div>            
+            </div>
+            <div class="col-xs-3">
+                <div id="Dead">
+                    <h2 class="text-center">Dead Lead</h2><hr>
+                    <ul class="list list-unstyled">
+                    </ul>
+                </div>
+            </div>
+            <div class="col-xs-3">
+                <input class="fuzzy-search" placeholder="Search Leads" style="margin-top:15px"/>
+                <h3 id="LeadName"></h3>
+                <p id="Owner"></p>
+                <p id="Contact"></p>
+                <p id="Notes"></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+
+<script>
+function detailreq(text) {
+        $.getJSON("{% url 'details' %}"+text, function(data){
+            $('#LeadName').html(text);
+            $('#Owner').html("Owner: " + data.lead);
+            var ct = "";
+            for(var i = 0; i < data.contacts.length; i++) {
+                ct += "Title: " + data.contacts[i][0] + "<br>"
+                ct += "Phone: " + data.contacts[i][1] + "<br>"
+                ct += "Direct: " + data.contacts[i][2] + "<br>"
+                ct += "Fax: " + data.contacts[i][3] + "<br>"
+                ct += "Cell: " + data.contacts[i][4] + "<br>"
+
+            }
+            $('#Contact').html(ct);
+
+            var nt = ""
+            console.log(JSON.stringify(data));
+        });
+}
+$(document).ready(function(){
+    $.getJSON("{% url 'leads' %}", function(data){
+        var options = {
+            valueNames: ['name'],
+            item: '<li><button class="name list-group-item btn-block" onclick="detailreq(this.innerHTML)"></button></li>'
+        };
+        var plist = new List('Priority', options, data.Priority);
+        var culist = new List('Customer', options, data.Customer);
+        var hlist = new List('Hot', options, data.Hot);
+        var qlist = new List('Qualified', options, data.Qualified);
+        var flist = new List('Favorite', options, data.Favorite);
+        var clist = new List('Cold', options, data.Cold);
+        var dlist = new List('Dead', options, data.Dead);
+        $(".fuzzy-search").keyup(function(){
+            plist.search($(this).val());
+            culist.search($(this).val());
+            hlist.search($(this).val());
+            qlist.search($(this).val());
+            flist.search($(this).val());
+            clist.search($(this).val());
+            dlist.search($(this).val());
+        });
+    });
+});
+
+</script>
+{% endblock %}
