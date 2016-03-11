@@ -84,16 +84,21 @@ function detailreq(text) {
             $('#Owner').html("Owner: " + data.lead);
             var ct = "";
             for(var i = 0; i < data.contacts.length; i++) {
-                ct += "Title: " + data.contacts[i][0] + "<br>"
-                ct += "Phone: " + data.contacts[i][1] + "<br>"
-                ct += "Direct: " + data.contacts[i][2] + "<br>"
-                ct += "Fax: " + data.contacts[i][3] + "<br>"
-                ct += "Cell: " + data.contacts[i][4] + "<br>"
+                ct += "Title: " + data.contacts[i][0] + "<br>";
+                ct += "Phone: " + data.contacts[i][1] + "<br>";
+                ct += "Direct: " + data.contacts[i][2] + "<br>";
+                ct += "Fax: " + data.contacts[i][3] + "<br>";
+                ct += "Cell: " + data.contacts[i][4] + "<br><p />";
 
             }
             $('#Contact').html(ct);
 
             var nt = ""
+            for(var i = 0; i < data.notes.length; i++) {
+                nt+= "Note: " + data.notes[i][0] + "<br>-" + data.notes[i][1] + "<br><p/>";
+            }
+            $('#Notes').html(nt);
+
             console.log(JSON.stringify(data));
         });
 }
